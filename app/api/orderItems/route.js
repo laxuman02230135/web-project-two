@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../lib/prisma';
 import jwt from 'jsonwebtoken'; // To verify JWT for authentication
 
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'; // Use a secure secret for JWT
 
 // Helper function to verify JWT token
@@ -18,8 +17,8 @@ const verifyToken = (token) => {
 
 export async function GET(request) {
   try {
-    // Get the token from cookies (you can also use Authorization header, depending on your setup)
-    const token = request.cookies.get('token');
+    // Get the token from cookies
+    const token = request.cookies.get('token')?.value;
 
     if (!token) {
       return NextResponse.json({ message: 'Authentication required' }, { status: 401 });
@@ -44,7 +43,5 @@ export async function GET(request) {
       { message: 'Something went wrong. Please try again later.' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }
