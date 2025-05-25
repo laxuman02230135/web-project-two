@@ -2,7 +2,10 @@ services:
   - type: web
     name: canteen-management
     env: node
-    buildCommand: npm install && npx prisma generate && npm run build
+    buildCommand: |
+      npm install
+      npx prisma generate
+      npm run build
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
@@ -10,4 +13,6 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: NODE_ENV
-        value: production 
+        value: production
+    healthCheckPath: /
+    autoDeploy: true 
